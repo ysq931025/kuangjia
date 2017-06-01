@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<h1>hello <span></span></h1>
+</body>
+<script>
+	var span=document.querySelector("span");
+	var cookie=document.cookie;
+	var arr=cookie.split("; ");
+	var obj={};
+	arr.forEach(function(v){
+        var ar=v.split("=");
+        obj[ar[0]]=ar[1]; 
+	})
+	span.innerHTML=obj.user;
+</script>
+</html>

@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="normalize.css">
+	<style>
+	    *{
+	  	  box-sizing:border-box;
+        font-family:"微软雅黑";
+        color:#333; 
+	    }
+      .container{
+      	width:400px;height:280px;
+      	border:1px solid #ccc;
+      	background:#3ff;
+      	position: absolute;
+      	left:0;right:0;top:0;bottom:0;
+      	margin:auto;
+      	padding-top:50px;
+      }
+      ul{
+      	margin:0;padding:0;list-style:none;
+      	width:100%;height:100%;
+      }
+      ul li{
+      	width:auto;height:50px;
+      	padding:0 30px;
+      	position: relative;
+      }
+      li span{
+      	float:left;
+      }
+      li input{
+      	float:right;
+        width:200px;
+        height:30px;
+        font-size: 12px;
+      }
+      li input:not([type=button]):focus{
+      	outline:1px solid red;
+      }
+      li input[type=button]{
+      	width:100%;
+      	background:#ff3;
+      	color:#333;
+      	border-radius:10px;
+      	border:none;
+      	box-shadow:0 5px 5px #aaa;
+        font-size: 18px;
+      }
+     aside{
+        position: absolute;
+        width:150px;height:30px;
+        line-height: 15px;
+        color:red;
+        background:rgba(255,255,255,0.5);
+        right:-80px;top:-15px;
+        border:1px solid rgba(255,0,0,0.5);
+        border-radius:5px;
+        display: none;
+        font-size:12px;
+      }
+	</style>
+</head>
+<body>
+	<div class="container">
+		 <ul>
+		 	<li>
+		 		<span>用户名:</span> <input type="text" placeholder="由6-10位英文、数字、下划线组成" id="username" autofocus>
+		 		<aside class="notice"></aside>
+		 	</li>
+		 	<li><span>密码:</span> <input type="password" id="password1">
+		 	    <aside class="notice"></aside>
+		    </li>
+      <li><span>重新输入密码:</span> <input type="password" id="password2">
+          <aside class="notice"></aside>
+      </li>
+		 	<li><input type="button" value="提交" id="sub"></li>
+		 </ul>
+	</div> 
+</body>
+<script src="ajax.js"></script>
+<script>
+  var username=document.querySelector("#username");
+  var notice=document.querySelectorAll(".notice");
+  var sub=document.querySelector("#sub");
+  var flag1=false;
+  var flag2=false;
+  var password1=document.querySelector("#password1");
+  var password2=document.querySelector("#password2");
+  username.onblur=function(){
+    var val=username.value;
+    var reg=/^\w{6,10}$/;
+    if(reg.test(val)){
+        ajax({
+          url:"check.php",
+          data:{user:username.value},
+          success:function(r){
+             if(r=="1"){
+              flag1=true;
+             }else{
+              flag1=false;
+              notice[0].innerHTML="用户名以存在";
+      notice[0].style.display="block";
+             }
+          }
+        })
+       flag1=true;
+    }else{
+      notice[0].innerHTML="请输入正确的格式";
+      notice[0].style.display="block";
+      flag1=false;
+    }
+  }
+  username.onfocus=function(){
+    notice[0].style.display="none";
+  }
+  password2.onblur=password1.onblur=function(){
+    if(password2.value==password1.value){
+      flag2=true;
+    }else{
+      flag2=false;
+      notice[2].style.display="block";
+      notice[2].innerHTML="请保持两次输入一致";
+    }
+  }
+  password2.onfocus=password1.onfocus=function(){
+     notice[2].style.display="none";
+  }
+  sub.onclick=function(){
+      if(flag1&&flag2){
+          ajax({
+            url:"submit.php",
+            data:{user:username.value,pass:password1.value},
+            success:function(r){
+               if(r==1){
+                 alert("注册成功");
+                 location.replace("login.html");
+               }
+            }
+          })
+      }else{
+        alert("请先完成注册")
+      }
+  }
+</script>
+</html>
